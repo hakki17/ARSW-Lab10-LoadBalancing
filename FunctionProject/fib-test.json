@@ -1,0 +1,20 @@
+{
+  "info": {
+    "name": "Fibonacci Test",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Fibonacci",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"nth\": 1000000}"
+        },
+        "url": "https://functionprojectfibonacci-fhf9czb7cxh8hxcc.canadacentral-01.azurewebsites.net/api/Fibonacci"
+      }
+    }
+  ]
+}
