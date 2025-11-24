@@ -129,7 +129,7 @@ El sistema manejó correctamente las 10 peticiones concurrentes sin problemas de
 
 **Tiempo de ejecución:** 29ms
 
-### Segunda ejecución (después de ~1.5 minutos)
+### Segunda ejecución (después de aproximadamente 1.5 minutos)
 
 **Tiempo de ejecución:** 3ms
 
@@ -158,23 +158,40 @@ La instancia de la función permaneció activa (warm) durante nuestras pruebas, 
 
 ### ¿Qué es un Azure Function?
 
+Es un servicio de cómputo serverless que permite ejecutar código bajo demanda sin gestionar servidores ni infraestructura. Escala automáticamente según la carga, y se activa a través de triggers como HTTP, colas o incluso timers.
+
 ### ¿Qué es serverless?
+
+Serverless es un modelo donde el proveedor de nube administra toda la infraestructura, incluyendo escalamiento, disponibilidad y ejecución.
+El usuario solo escribe el código y paga únicamente por el tiempo real de ejecución.
 
 ### ¿Qué es el runtime y qué implica seleccionarlo al momento de crear el Function App?
 
+El runtime es el entorno de ejecución que utiliza la Function App, como Node.js, Python, .NET o Java. Este entorno define el lenguaje permitido, las librerías disponibles, la compatibilidad con el sistema operativo, las versiones soportadas y el modo en que se ejecuta y gestiona el ciclo de vida de la función. Seleccionarlo de manera adecuada es importante porque la Function App solo puede ejecutar código que sea compatible con ese runtime.
+
 ### ¿Por qué es necesario crear un Storage Account de la mano de un Function App?
+
+Porque Azure Functions utiliza este recurso para almacenar la configuración interna del host, manejar las operaciones internas del runtime, guardar registros y diagnósticos y, en general, asegurar el correcto funcionamiento y la sincronización del entorno. Sin un Storage Account, la Function App no puede inicializarse ni operar.
 
 ### ¿Cuáles son los tipos de planes para un Function App?, ¿En qué se diferencian?, mencione ventajas y desventajas de cada uno de ellos.
 
+El Consumption Plan opera bajo un modelo completamente serverless. Permite el escalamiento automático y solo genera costos cuando la función se ejecuta, lo que lo convierte en la opción más eficiente para cargas de trabajo irregulares. Su principal desventaja es la presencia de cold start y el límite de tiempo por ejecución.
+
+El Premium Plan elimina el cold start gracias a que mantiene instancias siempre activas. Además, ofrece mayor capacidad de memoria y tiempos de ejecución ilimitados, lo que permite manejar cargas más exigentes. Su desventaja es que tiene un costo más elevado, incluso en momentos en los que no existen solicitudes.
+
+El Dedicated (App Service Plan) resulta útil cuando se desea combinar Functions con aplicaciones web dentro del mismo App Service. Tampoco presenta cold start y permite un control más estable de los recursos. No obstante, se factura independientemente del uso, por lo que no es la opción más eficiente para funciones que se ejecutan esporádicamente.
+
 ### ¿Por qué la memoization falla o no funciona de forma correcta?
+
+La memoization puede fallar en Azure Functions porque el entorno no garantiza que la memoria en RAM permanezca disponible. Las instancias pueden reciclarse cuando Azure “enfría” la Function tras un periodo sin actividad, lo que elimina cualquier dato almacenado en memoria. Además, durante el escalamiento horizontal, cada instancia creada mantiene su propio caché independiente, sin sincronización entre ellas, lo que provoca resultados inconsistentes. También eventos como despliegues, errores o reinicios del host borran por completo el contenido en memoria, impidiendo que la memoization sea confiable en escenarios donde la infraestructura es dinámica.
 
 ### ¿Cómo funciona el sistema de facturación de las Function App?
 
----
+_Consumption Plan_\
+En este modelo se cobra únicamente por el uso real de la Function App. La facturación se basa en la cantidad de ejecuciones y en el tiempo de ejecución medido en GB-segundos. Además, incluye un nivel gratuito mensual que ofrece 400.000 GB-segundos y un millón de ejecuciones sin costo.
 
-## Autores
+_Premium Plan_\
+En este plan el cobro se centra en las instancias pre-calentadas que permanecen disponibles para evitar cold start. No existe nivel gratuito y el costo es mayor debido a que se paga por la capacidad reservada, independientemente del número de ejecuciones.
 
-- [Nombre del estudiante]
-- [Nombre del compañero]
-
-**Fecha:** Noviembre 2025
+_Dedicated (App Service Plan)_\
+Aquí la facturación corresponde a las instancias del App Service asignadas, se usen o no las funciones. El costo no depende del número de ejecuciones ni del tiempo de ejecución, sino de los recursos provisionados dentro del plan.
